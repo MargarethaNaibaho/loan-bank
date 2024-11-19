@@ -4,16 +4,12 @@ import com.enigmabank.enigmabanking.constant.ERole;
 import com.enigmabank.enigmabanking.dto.request.LoginRequest;
 import com.enigmabank.enigmabanking.dto.request.RegisterAdminAndStaffRequest;
 import com.enigmabank.enigmabanking.dto.request.RegisterCustomerRequest;
-import com.enigmabank.enigmabanking.dto.response.AdminAndStaffResponse;
 import com.enigmabank.enigmabanking.dto.response.LoginResponse;
 import com.enigmabank.enigmabanking.dto.response.RegisterResponse;
 import com.enigmabank.enigmabanking.entity.*;
 import com.enigmabank.enigmabanking.repository.UserRepository;
 import com.enigmabank.enigmabanking.security.JwtUtil;
-import com.enigmabank.enigmabanking.service.AuthService;
-import com.enigmabank.enigmabanking.service.CustomerService;
-import com.enigmabank.enigmabanking.service.ProfilePictureService;
-import com.enigmabank.enigmabanking.service.RoleService;
+import com.enigmabank.enigmabanking.service.*;
 import com.enigmabank.enigmabanking.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final CustomerService customerService;
+    private final UserService userService;
     private final RoleService roleService;
     private final ProfilePictureService profilePictureService;
     private final JwtUtil jwtUtil;
@@ -141,6 +138,13 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         AppUser appUser = (AppUser) authenticate.getPrincipal();
+
+        User user = userService.getUserByIdNoResponse(appUser.getId());
+
+        if(user.getRole().getRole().name().equals("ROLE_CUSTOMER") && !customerService.isCustomerActive(user.getCustomer().getId())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credential");
+        }
+
         String token = jwtUtil.generateToken(appUser);
 
         return LoginResponse.builder()

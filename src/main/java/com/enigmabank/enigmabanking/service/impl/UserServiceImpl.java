@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -54,4 +52,9 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public User getUserByIdNoResponse(String id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User isnt't found"));
+    }
 }

@@ -11,6 +11,8 @@ import java.util.List;
 public interface CustomerService {
     Customer createNewCustomer(Customer customer);
     CustomerResponse getCustomerById(String id);
+    Customer getCustomerByIdNoResponse(String id);
+    Boolean isCustomerActive(String id);
     List<CustomerResponse> getAllCustomers();
     CustomerResponse updateCustomer(CustomerRequest customerRequest);
     void deleteCustomer(String id);

@@ -63,6 +63,9 @@ public class Loan {
     @Column(name = "approval_status")
     private EApprovalStatus approvalStatus;
 
+    @Column(name = "is_fully_paid")
+    private Boolean isFullyPaid;
+
     @OneToMany(mappedBy = "loan")
     @JsonManagedReference
     private List<LoanDetail> loanDetails;
@@ -70,7 +73,7 @@ public class Loan {
     @PrePersist
     protected void onCreate() {
         this.createdAt = System.currentTimeMillis();
-        this.updatedAt = this.createdAt;
+        this.isFullyPaid = false;
     }
 
     @PreUpdate

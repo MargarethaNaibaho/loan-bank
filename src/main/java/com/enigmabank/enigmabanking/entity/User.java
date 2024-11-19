@@ -27,6 +27,9 @@ public class User {
     @Column
     private String password;
 
+    @OneToOne(mappedBy = "user")
+    private Customer customer;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;

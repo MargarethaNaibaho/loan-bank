@@ -1,7 +1,6 @@
 package com.enigmabank.enigmabanking.service.impl;
 
 import com.enigmabank.enigmabanking.dto.request.LoanTypeRequest;
-import com.enigmabank.enigmabanking.entity.InstalmentType;
 import com.enigmabank.enigmabanking.entity.LoanType;
 import com.enigmabank.enigmabanking.repository.LoanTypeRepository;
 import com.enigmabank.enigmabanking.service.LoanTypeService;

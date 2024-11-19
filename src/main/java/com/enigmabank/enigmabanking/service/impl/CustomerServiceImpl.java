@@ -23,7 +23,6 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final ValidationUtil validationUtil;
-    private final ProfilePictureService profilePictureService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -43,6 +42,24 @@ public class CustomerServiceImpl implements CustomerService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer isn't found");
         }
         return mapToResponse(customer);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Customer getCustomerByIdNoResponse(String id) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer isn't found"));
+        if(customer.getStatus().equals(false)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer isn't found");
+        }
+
+        return customer;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Boolean isCustomerActive(String id) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer isn't found"));
+        return customer.getStatus();
     }
 
     @Transactional(readOnly = true)
